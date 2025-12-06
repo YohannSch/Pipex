@@ -6,7 +6,7 @@
 /*   By: yscheupl <yscheupl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 19:34:06 by yscheupl          #+#    #+#             */
-/*   Updated: 2025/12/06 20:05:21 by yscheupl         ###   ########.fr       */
+/*   Updated: 2025/12/06 21:43:34 by yscheupl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,17 @@ typedef enum e_error
 }			t_error;
 
 void		free_tab(char **tab);
+void		free_everything(t_pipex *data);
 int			parsing(t_pipex *data);
+int			create_path_env(t_pipex *data);
+int			find_command_path(t_pipex *data, int cmd_number);
 int			execute_pipex(t_pipex *data);
-int			check_one(t_pipex *data, int cmd_number);
-int			check_two(t_pipex *data, char *cmd_path, int cmd_number);
+int			pipex_init(t_pipex *data, char **argv, char **envp);
+void		error_management(t_error err);
+int			child_process2(t_pipex *data, int pipe_fd[2]);
+int			child_process1(t_pipex *data, int pipe_fd[2]);
+char		*ft_strjoin_path(char *s1, char *s2);
+char		**determine_command_args(t_pipex *data, int cmd_number);
+bool		handle_absolute_path(t_pipex *data, int cmd_number);
 
 #endif

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yscheupl <yscheupl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/06 19:34:15 by yscheupl          #+#    #+#             */
-/*   Updated: 2025/12/06 20:06:01 by yscheupl         ###   ########.fr       */
+/*   Created: 2025/12/06 21:40:18 by yscheupl          #+#    #+#             */
+/*   Updated: 2025/12/06 21:40:26 by yscheupl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,23 @@ int	find_command_path(t_pipex *data, int cmd_number)
 	char	*cmd_path;
 	int		i;
 
-	if (check_one(data, cmd_number) != ERR_MALLOC)
-		return (ERR_MALLOC);
-	if (cmd_number == 1)
-		cmd_args = data->cmd1_args;
-	else
-		cmd_args = data->cmd2_args;
+	if (handle_absolute_path(data, cmd_number))
+		return (SUCCESS);
+	cmd_args = determine_command_args(data, cmd_number);
 	i = 0;
 	while (data->path_env && data->path_env[i] != NULL)
 	{
 		cmd_path = ft_strjoin_path(data->path_env[i], cmd_args[0]);
 		if (cmd_path == NULL)
 			return (ERR_MALLOC);
-		if (check_two(data, cmd_path, cmd_number) == SUCCESS)
+		if (access(cmd_path, X_OK) == 0)
+		{
+			if (cmd_number == 1)
+				data->cmd1_path = cmd_path;
+			else
+				data->cmd2_path = cmd_path;
 			return (SUCCESS);
+		}
 		free(cmd_path);
 		i++;
 	}
